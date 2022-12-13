@@ -25,6 +25,7 @@ const chainIds = {
   "arbitrum-mainnet": 42161,
   avalanche: 43114,
   bsc: 56,
+  bscTest: 97,
   hardhat: 31337,
   mainnet: 1,
   "optimism-mainnet": 10,
@@ -41,6 +42,10 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
       break;
     case "bsc":
       jsonRpcUrl = "https://bsc-dataseed1.binance.org";
+      break;
+    case "bscTest":
+      // jsonRpcUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
+      jsonRpcUrl = "https://bsc-testnet.public.blastapi.io";
       break;
     default:
       jsonRpcUrl = "https://" + chain + ".infura.io/v3/" + infuraApiKey;
@@ -86,6 +91,7 @@ const config: HardhatUserConfig = {
     arbitrum: getChainConfig("arbitrum-mainnet"),
     avalanche: getChainConfig("avalanche"),
     bsc: getChainConfig("bsc"),
+    bscTest: getChainConfig("bscTest"),
     mainnet: getChainConfig("mainnet"),
     optimism: getChainConfig("optimism-mainnet"),
     "polygon-mainnet": getChainConfig("polygon-mainnet"),
@@ -99,7 +105,11 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   solidity: {
-    version: "0.8.17",
+    compilers: [
+      { version: "0.5.0" },
+      { version: "0.8.17" },
+      // { version: "0.6.12" },
+    ],
     settings: {
       metadata: {
         // Not including the metadata hash
