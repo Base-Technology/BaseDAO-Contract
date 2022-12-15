@@ -3,6 +3,7 @@
 pragma solidity >=0.8.6;
 
 import "./BaseToken.sol";
+import "./airdrop/AirdropV2.sol";
 
 contract BaseDAO {
     bool private initialized;
@@ -11,6 +12,7 @@ contract BaseDAO {
 
     uint256 bank;
     BaseToken public token;
+    // Airdrop public adMod;
 
     uint256 public proposalCount = 0;
     struct Proposal {
@@ -33,6 +35,8 @@ contract BaseDAO {
 
     event eVote(uint256 pId);
     event transferEvent(uint256 amount, string t);
+    event airdropRequest(address _recipients, address _tokenAddr, uint256 _values);
+    // event airdropCreated(address addr);
 
     modifier Initialized() {
         require(initialized, "DAO is not initialized");
@@ -58,7 +62,7 @@ contract BaseDAO {
     }
 
     function setPrice_otherErc20(address _tokenAddr, uint256 _price) public OnlyAdmin(msg.sender) {
-        require(tokenWhitelist[_tokenAddr] != true, "Token already in White list");
+        require(tokenWhitelist[_tokenAddr] == true, "Token already in White list");
         tokenPrice_otherErc20[_tokenAddr] = _price;
     }
 
@@ -77,6 +81,7 @@ contract BaseDAO {
         createTime = block.timestamp;
         initialized = true;
         administrator[_admin] = true;
+        administrator[address(this)] = true;
     }
 
     function init_test_only() external {
@@ -87,6 +92,7 @@ contract BaseDAO {
         createTime = block.timestamp;
         initialized = true;
         administrator[msg.sender] = true;
+        administrator[address(this)] = true;
     }
 
     // =============================== PROPOSAL FUNCTION START =========================================
@@ -189,10 +195,10 @@ contract BaseDAO {
         // payable(msg.sender).transfer(_amount);
         uint256 amountToSell = _amount * tokenPrice_otherErc20[_tokenAddr];
         IERC20 otherToken = IERC20(_tokenAddr);
-        uint256 allowance_sell = otherToken.allowance(address(this), msg.sender);
-        if (allowance_sell <= amountToSell) {
-            otherToken.approve(msg.sender, amountToSell);
-        }
+        // uint256 allowance_sell = otherToken.allowance(address(this), msg.sender);
+        // if(allowance_sell <= amountToSell){
+        //     otherToken.approve(msg.sender, amountToSell);
+        // }
         otherToken.transfer(msg.sender, amountToSell);
         emit transferEvent(amountToSell, "sell_byOtherToken");
         // emit Sold(amount);
@@ -200,10 +206,28 @@ contract BaseDAO {
 
     function addToWhitelist(address _tokenAddr, uint256 _price) public OnlyAdmin(msg.sender) {
         // require(administrator[msg.sender] == true, "only admin can do it");
-        require(tokenWhitelist[_tokenAddr] != true, "Token already in White list");
+        require(tokenWhitelist[_tokenAddr] == false, "Token already in White list");
         tokenWhitelist[_tokenAddr] = true;
         setPrice_otherErc20(_tokenAddr, _price);
     }
 
-    function checkBalance() public {}
+    // ========================== AIRDROP FUNCTION START ===============================
+    // function setAirdrop() public OnlyAdmin(msg.sender) {
+    //     adMod = new Airdrop();
+    //     emit airdropCreated(address(adMod));
+    // }
+
+    // function AirTransferDiffValue_dao(
+    //     address[] memory _recipients,
+    //     uint256[] memory _values,
+    //     address _tokenAddress
+    // ) external {
+    //     adMod.AirTransferDiffValue(_recipients, _values, _tokenAddress);
+    // }
+    // function airdropTransfer(address _airdoropAddr, address _recipients, address _tokenAddr, uint256 _values) public OnlyAdmin(msg.sender) {
+    //     IERC20 otherToken = IERC20(_tokenAddr);
+    //     otherToken.transfer(_airdoropAddr, _values);
+    //     emit airdropRequest(_recipients, _tokenAddr, _values);
+    // }
+    // ========================== AIRDROP FUNCTION END =================================
 }
