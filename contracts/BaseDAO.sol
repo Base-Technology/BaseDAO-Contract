@@ -3,7 +3,8 @@
 pragma solidity >=0.8.6;
 
 import "./BaseToken.sol";
-import "./airdrop/AirdropV2.sol";
+
+// import "./airdrop/AirdropV2.sol";
 
 contract BaseDAO {
     bool private initialized;
@@ -21,7 +22,21 @@ contract BaseDAO {
         uint256 startingPeriod; // 开始时间
     }
 
+    struct Member {
+        address memberAddr;
+        uint8 memberType; // 成员等级 0-非成员/ 1-普通成员/ 2-核心成员/
+        uint8 blacklist; // 是否被加入黑名单 0-否/ 1-是/
+        uint256 contribution; // 成员贡献度
+    }
+    // 贡献度规则 0.0.1
+    // 成员发布提案 -通过++ -失败+
+    // admin自主设置
+    // 投票+
+    // recharge & buy ++
+    // sell --
+
     mapping(address => bool) public administrator;
+    mapping(address => Member) public memberList;
     mapping(uint256 => Proposal) public proposalList;
     mapping(uint256 => mapping(address => uint8)) public voters;
     mapping(uint256 => address[]) public allVoters;
@@ -217,17 +232,52 @@ contract BaseDAO {
     //     emit airdropCreated(address(adMod));
     // }
 
-    // function AirTransferDiffValue_dao(
-    //     address[] memory _recipients,
-    //     uint256[] memory _values,
-    //     address _tokenAddress
-    // ) external {
-    //     adMod.AirTransferDiffValue(_recipients, _values, _tokenAddress);
-    // }
-    // function airdropTransfer(address _airdoropAddr, address _recipients, address _tokenAddr, uint256 _values) public OnlyAdmin(msg.sender) {
-    //     IERC20 otherToken = IERC20(_tokenAddr);
-    //     otherToken.transfer(_airdoropAddr, _values);
-    //     emit airdropRequest(_recipients, _tokenAddr, _values);
-    // }
+    function AirTransferDiffValue(
+        address[] memory _recipients,
+        uint256[] memory _values,
+        address _tokenAddress
+    ) public OnlyAdmin returns (bool) {
+        require(_recipients.length > 0);
+        require(_recipients.length == _values.length);
+
+        IERC20 airdrop_token = IERC20(_tokenAddress);
+
+        for (uint j = 0; j < _recipients.length; j++) {
+            airdrop_token.transfer(_recipients[j], _values[j]);
+        }
+
+        return true;
+    }
+
+    function AirTransfer(
+        address[] memory _recipients,
+        uint256 _value,
+        address _tokenAddress
+    ) public OnlyAdmin returns (bool) {
+        require(_recipients.length > 0);
+        IERC20 airdrop_token = IERC20(_tokenAddress);
+        for (uint j = 0; j < _recipients.length; j++) {
+            airdrop_token.transfer(_recipients[j], _value);
+        }
+        return true;
+    }
+
+    function withdrawalToken(address _tokenAddress) public OnlyAdmin(msg.sender) {
+        IERC20 airdrop_token = IERC20(_tokenAddress);
+        airdrop_token.transfer(owner, token.balanceOf(address(this)));
+    }
+
+    function rechargeToken(address _tokenAddr, uint256 _amount) public {
+        IERC20 otherToken = IERC20(_tokenAddr);
+        uint256 allowance = otherToken.allowance(msg.sender, address(this));
+        require(allowance >= _amount, "Check the token allowance");
+
+        otherToken.transferFrom(msg.sender, address(this), _amount);
+        transferEvent(_amount, "recharge event");
+    }
+
     // ========================== AIRDROP FUNCTION END =================================
+    // ========================== MEMBER FUNCTION START ================================
+    function memberJoin(address _memberAddr, uint8 _memberType, uint256 _contribution) public OnlyAdmin(msg.sender) {}
+    // ========================== MEMBER FUNCTION ENF ==================================
 }
