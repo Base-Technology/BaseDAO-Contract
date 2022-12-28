@@ -1,10 +1,16 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.0;
 
 import "../interface/IERC20.sol";
 import "../interface/IModules.sol";
 
 contract AirdropContract is IModules {
+    modifier AdminCheck(address _daoAddr, address _memberAddr) {
+        IBaseDAO dao = IBaseDAO(_daoAddr);
+        require(dao.adminCheck(_memberAddr) == true, "Not Administrator");
+        _;
+    }
+
     function AirTransferDiffValue(
         address[] memory _recipients,
         uint256[] memory _values,
@@ -39,6 +45,6 @@ contract AirdropContract is IModules {
 
     function withdrawalToken(address _daoAddr, address _tokenAddress) public AdminCheck(_daoAddr, msg.sender) {
         IERC20 token = IERC20(_tokenAddress);
-        token.transferFrom(_daoAddr, token.balanceOf(address(this)));
+        token.transfer(_daoAddr, token.balanceOf(address(this)));
     }
 }
