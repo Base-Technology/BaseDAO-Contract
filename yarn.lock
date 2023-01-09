@@ -21,8 +21,8 @@ __metadata:
     "@nomicfoundation/hardhat-toolbox": ^2.0.0
     "@nomiclabs/hardhat-ethers": ^2.2.1
     "@nomiclabs/hardhat-etherscan": ^3.1.2
-    "@openzeppelin/contracts": 2.5.1
-    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@openzeppelin/contracts": ^4.4.2
+    "@openzeppelin/hardhat-upgrades": ^1.22.0
     "@trivago/prettier-plugin-sort-imports": ^4.0.0
     "@typechain/ethers-v5": ^10.1.1
     "@typechain/hardhat": ^6.1.4
@@ -1531,16 +1531,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:2.5.1, openzepplin-v5@npm:@openzeppelin/contracts@2.5.1":
-  version: 2.5.1
-  resolution: "@openzeppelin/contracts@npm:2.5.1"
-  checksum: 7626ef6d5940ece6d4f3f4d83ace424287953cc2d15cb5fe8d0f0cf42b47873f9ab52a82fe1f4e200e7ff954b8e4551e55da37a45ef5ee5a7f4c586f1cb96018
+"@openzeppelin/contracts@npm:^4.4.2":
+  version: 4.8.0
+  resolution: "@openzeppelin/contracts@npm:4.8.0"
+  checksum: dfab51a7f91735cfb1e94dd5074736b0dac0207e4ebf26eb46b32defd3b67adce5a36b248daa7b841c21be74863c1e37cf92ed194a9c36d3f8c5326d1a24242a
   languageName: node
   linkType: hard
 
-"@openzeppelin/hardhat-upgrades@npm:^1.21.0":
-  version: 1.21.0
-  resolution: "@openzeppelin/hardhat-upgrades@npm:1.21.0"
+"@openzeppelin/hardhat-upgrades@npm:^1.22.0":
+  version: 1.22.0
+  resolution: "@openzeppelin/hardhat-upgrades@npm:1.22.0"
   dependencies:
     "@openzeppelin/upgrades-core": ^1.20.0
     chalk: ^4.1.0
@@ -1556,7 +1556,7 @@ __metadata:
       optional: true
   bin:
     migrate-oz-cli-project: dist/scripts/migrate-oz-cli-project.js
-  checksum: dada5df033bc29d4104a574bd8a28733c56cc86cd0d1ec17a6f074546d0ae589ba4ac417ebdb2ad7685061258cdefc406e672beeb3ec3f8874b5673badb1b0ef
+  checksum: 39e575a08d75c52e9160a67f348e0ef2cadda00b0feb871c05b4981af0dd0b2b42e1f70d338cb6f739491fef50342bc397128ee08c656300902b99a3d4531efe
   languageName: node
   linkType: hard
 
@@ -7651,6 +7651,13 @@ __metadata:
   dependencies:
     mimic-fn: ^4.0.0
   checksum: 0846ce78e440841335d4e9182ef69d5762e9f38aa7499b19f42ea1c4cd40f0b4446094c455c713f9adac3f4ae86f613bb5e30c99e52652764d06a89f709b3788
+  languageName: node
+  linkType: hard
+
+"openzepplin-v5@npm:@openzeppelin/contracts@2.5.1":
+  version: 2.5.1
+  resolution: "@openzeppelin/contracts@npm:2.5.1"
+  checksum: 7626ef6d5940ece6d4f3f4d83ace424287953cc2d15cb5fe8d0f0cf42b47873f9ab52a82fe1f4e200e7ff954b8e4551e55da37a45ef5ee5a7f4c586f1cb96018
   languageName: node
   linkType: hard
 

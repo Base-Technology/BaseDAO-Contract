@@ -27,7 +27,7 @@ contract BaseToken is IERC20 {
 
     mapping(address => mapping(address => uint256)) allowed;
 
-    uint256 totalSupply_ = 10 ether;
+    uint256 totalSupply_ = 100 ether;
 
     constructor(string memory _name, string memory _symbol) {
         name = _name;
@@ -54,12 +54,6 @@ contract BaseToken is IERC20 {
     function approve(address delegate, uint256 numTokens) public override returns (bool) {
         allowed[msg.sender][delegate] = numTokens;
         emit Approval(msg.sender, delegate, numTokens);
-        return true;
-    }
-
-    function approve_v2(address delegate, uint256 numTokens, address owner) public returns (bool) {
-        allowed[owner][delegate] = numTokens;
-        emit Approval(owner, delegate, numTokens);
         return true;
     }
 

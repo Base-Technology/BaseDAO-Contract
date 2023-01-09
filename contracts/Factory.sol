@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.6;
 
-import "./BaseDAO.sol";
-import "./interface/IDAOFactory.sol";
+// import "./BaseDAO.sol";
+import "./interface/IBaseDAO.sol";
+
+// import "./interface/IDAOFactory.sol";
 
 // =========== DAO 完成后修改 ==============
 
@@ -20,7 +22,7 @@ contract CloneFactory {
     }
 }
 
-contract DAOFactory is CloneFactory, IDAOFactory {
+contract DAOFactory is CloneFactory {
     address public template;
     mapping(uint256 => address) public daos;
     uint256 public daoIdx = 0;
@@ -31,38 +33,23 @@ contract DAOFactory is CloneFactory, IDAOFactory {
         template = _template;
     }
 
-    event CreateComplete(
-        address indexed DaoAddr,
-        address TokenAddr,
-        address _admin,
-        uint256 createdTime,
-        uint256 periodDuration,
-        uint256 votingPeriodLength
-    );
+    event CreateComplete(address indexed DaoAddr, address _admin);
 
-    function createBaseDAO(
-        address _admin,
-        address _tokenAddr,
-        uint256 _periodDuration,
-        uint256 _votingPeriodLength,
-        string memory _name,
-        string memory _symbol
-    ) public override returns (address) {
+    // ============= 根据DAO的init function 修改输入参数 ==============
+    function createBaseDAO(address _admin) public returns (address) {
         BaseDAO baseDao = BaseDAO(createClone(template));
 
-        baseDao.init(_admin, _tokenAddr, _periodDuration, _votingPeriodLength, _name, _symbol);
+        baseDao.init(_admin);
 
         daoIdx = daoIdx + 1;
         daos[daoIdx] = address(baseDao);
-        emit CreateComplete(
-            address(baseDao),
-            _tokenAddr,
-            _admin,
-            block.timestamp,
-            _periodDuration,
-            _votingPeriodLength
-        );
+        emit CreateComplete(address(baseDao), _admin);
 
         return address(baseDao);
+        // return daos[daoIdx];
+    }
+
+    function returnTest() public view returns (address) {
+        return template;
     }
 }

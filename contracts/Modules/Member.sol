@@ -1,16 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interface/IERC20.sol";
+// import "../interface/IERC20.sol";
 import "../interface/IModules.sol";
 
 contract MemberContract is IModules {
-    modifier AdminCheck(address _daoAddr, address _memberAddr) {
-        IBaseDAO dao = IBaseDAO(_daoAddr);
-        require(dao.adminCheck(_memberAddr) == true, "Not Administrator");
-        _;
-    }
-
     modifier MemberCheck(address _daoAddr, address _memberAddr) {
         require(memberList[_daoAddr][_memberAddr].memberAddr != address(0), "Not Member");
         require(memberList[_daoAddr][_memberAddr].blacklist != 1, "Member in blacklist");
@@ -62,14 +56,14 @@ contract MemberContract is IModules {
         require(memberList[_daoAddr][_memberAddr].memberAddr == address(0), "Member already exist");
         Member memory newMember = Member({ memberAddr: msg.sender, memberType: 1, blacklist: 0, contribution: 0 });
         memberList[_daoAddr][_memberAddr] = newMember;
-        IBaseDAO dao = IBaseDAO(_daoAddr);
+        BaseDAO dao = BaseDAO(_daoAddr);
         dao.addMember(_memberAddr);
     }
 
     function memberQuit(address _daoAddr, address _memberAddr) public MemberCheck(_daoAddr, _memberAddr) {
         require(memberList[_daoAddr][_memberAddr].memberAddr == msg.sender, "Error Member");
         delete memberList[_daoAddr][_memberAddr];
-        IBaseDAO dao = IBaseDAO(_daoAddr);
+        BaseDAO dao = BaseDAO(_daoAddr);
         dao.removeMember(_memberAddr);
     }
 }
